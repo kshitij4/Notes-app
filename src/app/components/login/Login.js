@@ -30,7 +30,7 @@ const Login = (props) => {
   const [passState, passDispacher] = useReducer(passReducer , { value: '', isValid: null});
 
   const { isValid : isEmailValid } = emailState;
-  const {isValid : isPassValid } = passState;
+  const { isValid : isPassValid } = passState;
 
   useEffect( () => {
     const id = setTimeout(()=> {

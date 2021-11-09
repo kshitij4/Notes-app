@@ -20,6 +20,15 @@
 .nav a:active {
   color: #9f9fbb;
 }
+.nav Link {
+  text-decoration: none;
+  color: rgb(0, 0, 0);
+}
+
+.nav Link:hover,
+.nav Link:active {
+  color: #9f9fbb;
+}
 
 .nav button {
   font: inherit;
