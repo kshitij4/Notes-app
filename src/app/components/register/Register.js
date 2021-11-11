@@ -29,7 +29,7 @@ const phoneReducer = (state, action) => {
 		return { value: action.val, isValid: re.test(action.val) };
 	}
 	if (action.type === "BLUR") {
-		return { value: state.value, isValid:  re.test(action.val) };
+		return { value: state.value, isValid:  re.test(state.value) };
 	}
 	return { value: "", isValid: false };
 };
@@ -74,7 +74,7 @@ const Register = (props) => {
 	};
 
 	const validatePasswordHandler = () => {
-		emailDispacher({ type: "BLUR" });
+		passDispacher({ type: "BLUR" });
 	};
 
 	const validatePhoneHandler = () => {
@@ -84,8 +84,8 @@ const Register = (props) => {
 	const submitHandler = (event) => {
 		event.preventDefault();
 		props.onRegister({
-			firstName: fname.current.value,
-			lastName: lname.current.value,
+			firstname: fname.current.value,
+			lastname: lname.current.value,
 			email: emailState.value,
 			phone: phoneState.value,
 			password: passState.value,

@@ -12,13 +12,7 @@ const Navigation = (props) => {
   return (
       <div>
         <nav className={classes.nav}>
-          <ul>
-            {props.isLoggedIn && (
-              <li>
-                <Link to="/profile">Profile</Link>
-                {/* <a href="/">Profile</a> */}
-              </li>
-            )}
+          <ul>            
             {!props.isLoggedIn && (
               <li>
                 <Link to="/register">Register</Link>
@@ -31,7 +25,18 @@ const Navigation = (props) => {
             )}
             {props.isLoggedIn && (
               <li>
-                <Link to="/">Home</Link>
+                <Link to="/">Create Notes</Link>
+              </li>
+            )}
+            {props.isLoggedIn && (
+              <li>
+                <Link to="/notes">View Notes</Link>
+              </li>
+            )}
+            {props.isLoggedIn && (
+              <li>
+                <Link to="/profile">Profile</Link>
+                {/* <a href="/">Profile</a> */}
               </li>
             )}
             {props.isLoggedIn && (
@@ -41,13 +46,6 @@ const Navigation = (props) => {
             )}
           </ul>
         </nav>
-
-        {/* <Routes>
-            <Route path="/register" component = {Register} />
-            <Route path="/home" component = {Home} />
-            <Route path= "/" component = {Login} exact />
-            <Route path = "/login" component = {Login} />
-        </Routes> */}
       </div>
   );
 };
