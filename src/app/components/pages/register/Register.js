@@ -1,6 +1,6 @@
 import classes from "./Register.module.css";
-import Button from "../common/UI/Button/Button";
-import Card from "../common/UI/Card/Card";
+import Button from "../../common/UI/Button/Button";
+import Card from "../../common/UI/Card/Card";
 import { useEffect, useReducer, useState, useRef } from "react";
 
 const emailReducer = (state, action) => {

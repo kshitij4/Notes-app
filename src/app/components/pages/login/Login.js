@@ -1,8 +1,8 @@
 import React, { useEffect, useReducer, useState } from 'react';
 
-import Card from '../common/UI/Card/Card';
+import Card from '../../common/UI/Card/Card';
 import classes from './Login.module.css';
-import Button from '../common/UI/Button/Button';
+import Button from '../../common/UI/Button/Button';
 
 const emailReducer = (state , action ) => {
   if(action.type === 'INPUT'){

@@ -1,4 +1,4 @@
-import Card from '../common/UI/Card/Card';
+import Card from  '../../common/UI/Card/Card';
 import InputNotes from '../notes/InputNotes';
 import classes from './Home.module.css';
 

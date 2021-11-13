@@ -1,6 +1,6 @@
 import { useRef } from "react";
-import Button from "../common/UI/Button/Button";
-import Card from "../common/UI/Card/Card";
+import Button from "../../common/UI/Button/Button";
+import Card from "../../common/UI/Card/Card";
 import classes from "./InputNotes.module.css";
 
 const InputNotes = (props) => {
