@@ -1,58 +1,65 @@
 import React, { useEffect, useState } from "react";
-import { api, checkVerified } from "./utils/admin.api";
-// import {environment} from './environments/environment';
-// import axios  from 'axios';
+import { api } from "./utils/admin.api";
 
-import Login from "./components/login/Login";
-import Home from "./components/home/Home";
+import Login from "./components/pages/login/Login";
+import Home from "./components/pages/home/Home";
 import MainHeader from "./components/common/Layout/Header/MainHeader/MainHeader";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Register from "./components/register/Register";
-import Profile from "./components/profile/Profile";
-import NotesList from "./components/notes/NotesList";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Register from "./components/pages/register/Register";
+import Profile from "./components/pages/profile/Profile";
+import NotesList from "./components/pages/notes/NotesList";
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
-	const [notes, setNotes] = useState([]);
 
-	const notesHandler = (title, description) => {
-		setNotes((prev) => {
-			const updatedNotes = [...prev];
-			updatedNotes.unshift({ title, description, id: Math.random().toString() });
-			return updatedNotes;
-		});
+	const notesHandler = async (title, description) => {
+		try {
+			const res = await api.createNote({ userId: localStorage.getItem("userId"), title, description });
+			console.log(res);
+			if (res.data.isSuccess) {
+				console.log(res.data.message);
+			} else {
+				console.log("Something went wrong");
+				console.log(res.data.message);
+			}
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	useEffect(() => {
-		if (localStorage.getItem("isLogged") === "1") {
+		if (localStorage.getItem("userId")) {
 			setIsLoggedIn(true);
 		}
 	}, []);
 
 	const loginHandler = async (email, password) => {
-		const res = await api.login({ email, password });
-		console.log(res);
-		if(res.data.isSuccess){
-			setIsLoggedIn(true);
-			localStorage.setItem("isLogged", 1);
-		}else{
-			console.log(res.data.message);
+		try {
+			const res = await api.login({ email, password });
+			console.log(res);
+			if (res.data.isSuccess) {
+				setIsLoggedIn(true);
+				console.log(res);
+				localStorage.setItem("userId", res.data.userId);
+			} else {
+				console.log(res.data.message);
+			}
+		} catch (error) {
+			console.log(error);
 		}
-		// const res = await AdminApi.login({email,password});
-		// console.log("logged in", res);
-		// if(res && res.data.isSuccess){
-		// 	setIsLoggedIn(true);
-		// 	localStorage.setItem("isLogged", 1);
-		// }
 	};
 
 	const registerHandler = async (userData) => {
-		// const res = AdminApi.register(userData);
-		// console.log(res);
+		try {
+			const res = await api.register(userData);
+			console.log(res);
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const logoutHandler = () => {
-		localStorage.removeItem("isLogged");
+		localStorage.removeItem("userId");
 		setIsLoggedIn(false);
 	};
 
@@ -61,9 +68,9 @@ function App() {
 			<MainHeader isAuthenticated={isLoggedIn} onLogout={logoutHandler} />
 			<main>
 				<Routes>
-					<Route path="/register" element={<Register onRegister={registerHandler} />} />
-					<Route path="/profile" element={<Profile />} />
-					<Route path="/notes" element={<NotesList notes={notes} />} />
+					<Route path="/register" element={!isLoggedIn ? <Register onRegister={registerHandler} /> : <Navigate to="/" />} />
+					<Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/" />} />
+					<Route path="/notes" element={isLoggedIn ? <NotesList /> : <Navigate to="/" />} />
 					<Route path="/" element={isLoggedIn ? <Home onAddNote={notesHandler} /> : <Login onLogin={loginHandler} />} exact />
 				</Routes>
 			</main>
