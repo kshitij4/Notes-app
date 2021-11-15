@@ -13,10 +13,37 @@ export const api = {
 	},
 	getNotes: () => {
 		let userId = localStorage.getItem("userId");
-		return axios.get(`${environment.baseUrl}/notes/searchNote/${userId}`);
+
+		// axios.get("http://localhost:4000/users")
+		// 	.then((res) => {
+		// 		this.setState({ usersCollection: res.data });
+		// 	})
+		// 	.catch(function (error) {
+		// 		console.log(error);
+		// 	});
+		return new Promise(async (resolve, reject) => {
+			axios.get(`${environment.baseUrl}/notes/searchNote/${userId}`)
+				.then((error, res) => {
+					console.log(res);
+					if (error) {
+						reject({ success: false, data: error });
+					} else {
+						resolve(res && res.body ? res.body : {});
+					}
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+		});
+
+		// return axios.get(`${environment.baseUrl}/notes/searchNote/${userId}`);
 	},
 	getProfile: () => {
 		let userId = localStorage.getItem("userId");
 		return axios.get(`${environment.baseUrl}/users/student/profile/${userId}`);
+	},
+	deleteNote: (noteId) => {
+		let userId = localStorage.getItem("userId");
+		return axios.delete(`${environment.baseUrl}/notes/userId/${userId}/deleteNote/${noteId}`);
 	},
 };

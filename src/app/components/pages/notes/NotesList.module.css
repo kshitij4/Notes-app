@@ -17,3 +17,16 @@
 	background: #80a0b6;
 	border: 1px solid white;
 }
+.del-btn{
+	background: #ce1d06;
+    border: 1px solid #ce1d06;
+	padding:  0.5rem 1rem;
+	float: right;
+}
+
+.del-btn:hover,
+  .del-btn:active {
+    background: #911403;
+    border-color: #911403;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.26);
+  }
