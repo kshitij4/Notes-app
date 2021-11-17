@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "../../../utils/admin.api";
+import { adminApi } from "../../../utils/admin.api";
 import Card from "../../common/UI/Card/Card";
 import classes from './Profile.module.css';
 const Profile = () => {
@@ -8,7 +8,7 @@ const Profile = () => {
     useEffect(() => {
         async function fetchProfile(){ 
             try {
-                const res = await api.getProfile();
+                const res = await adminApi.getProfile();
                 console.log(res);
                 if(res.data.isSuccess){
                     setUserData(res.data.Data); 

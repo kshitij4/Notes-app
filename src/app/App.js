@@ -1,30 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { api } from "./utils/admin.api";
+import { adminApi } from "./utils/admin.api";
+import { notesApi } from "./utils/notes.api";
+
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import Login from "./components/pages/login/Login";
 import Home from "./components/pages/home/Home";
 import MainHeader from "./components/common/Layout/Header/MainHeader/MainHeader";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Register from "./components/pages/register/Register";
 import Profile from "./components/pages/profile/Profile";
 import NotesList from "./components/pages/notes/NotesList";
+
+import Toast from "./components/common/actions/Toast/Toast";
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 	const notesHandler = async (title, description) => {
-		try {
-			const res = await api.createNote({ userId: localStorage.getItem("userId"), title, description });
-			console.log(res);
-			if (res.data.isSuccess) {
-				console.log(res.data.message);
-			} else {
-				console.log("Something went wrong");
-				console.log(res.data.message);
-			}
-		} catch (error) {
-			console.log(error);
-		}
+		notesApi.createNote({ userId: localStorage.getItem("userId"), title, description })
+			.then((res) => {
+				console.log(res);
+				if (res.data.isSuccess) {
+					console.log(res.data.message);
+					toast.success(res.data.message);
+				} else {
+					console.log("Something went wrong");
+					console.log(res.data.message);
+					toast.error(res.data.message);
+				}
+			})
+			.catch((error) => {
+				console.log(error);
+				toast.error(error.message);
+			});
 	};
 
 	useEffect(() => {
@@ -35,46 +45,60 @@ function App() {
 
 	const loginHandler = async (email, password) => {
 		try {
-			const res = await api.login({ email, password });
+			const res = await adminApi.login({ email, password });
 			console.log(res);
 			if (res.data.isSuccess) {
 				setIsLoggedIn(true);
 				console.log(res);
-				localStorage.setItem("userId", res.data.userId);
+				localStorage.setItem("token", res.data.Data.token);
+				toast.success("Logged in Successfully");
 			} else {
 				console.log(res.data.message);
+				toast.error(res.data.message);
 			}
 		} catch (error) {
 			console.log(error);
+			toast.error(error.message);
 		}
 	};
 
 	const registerHandler = async (userData) => {
 		try {
-			const res = await api.register(userData);
+			const res = await adminApi.register(userData);
 			console.log(res);
+			if (res.data.isSuccess) {
+				toast.success(res.data.message);
+			} else {
+				console.log(res.data.message);
+				toast.error(res.data.message);
+			}
 		} catch (error) {
 			console.log(error);
+			toast.error(error.message);
 		}
 	};
 
 	const logoutHandler = () => {
-		localStorage.removeItem("userId");
+		localStorage.removeItem("token");
 		setIsLoggedIn(false);
+		toast.success("Logged out Successfully");
 	};
 
 	return (
-		<Router>
-			<MainHeader isAuthenticated={isLoggedIn} onLogout={logoutHandler} />
-			<main>
-				<Routes>
-					<Route path="/register" element={!isLoggedIn ? <Register onRegister={registerHandler} /> : <Navigate to="/" />} />
-					<Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/" />} />
-					<Route path="/notes" element={isLoggedIn ? <NotesList /> : <Navigate to="/" />} />
-					<Route path="/" element={isLoggedIn ? <Home onAddNote={notesHandler} /> : <Login onLogin={loginHandler} />} exact />
-				</Routes>
-			</main>
-		</Router>
+		<>
+			<Toast />
+			<Router>
+				<MainHeader isAuthenticated={isLoggedIn} onLogout={logoutHandler} />
+				<main>
+					<Routes>
+						<Route path="/register" element={!isLoggedIn ? <Register onRegister={registerHandler} /> : <Navigate to="/" />} />
+						<Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/" />} />
+						<Route path="/notes" element={isLoggedIn ? <NotesList /> : <Navigate to="/" />} />
+						<Route path="/" element={isLoggedIn ? <Home onAddNote={notesHandler} /> : <Login onLogin={loginHandler} />} exact />
+					</Routes>
+				</main>
+			</Router>
+		</>
 	);
 }
 

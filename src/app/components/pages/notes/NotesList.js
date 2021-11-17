@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { environment } from "../../../environments/environment";
-import { api } from "../../../utils/admin.api";
+import { toast } from "react-toastify";
+import { notesApi } from "../../../utils/notes.api";
 import Button from "../../common/UI/Button/Button";
 import Card from "../../common/UI/Card/Card";
 import styles from "./NotesList.module.css";
@@ -11,25 +11,27 @@ const NotesList = (props) => {
 
 	const deleteHandler = async (id) => {
 		try {
-			const res = await api.deleteNote(id);
+			const res = await notesApi.deleteNote(id);
 			console.log(res);
 			if (res.data.isSuccess) {
 				console.log(res.data.message);
 				setChange((prev) => !prev);
+				toast.success(res.data.message);
 			} else {
 				console.log(res.data.message);
+				toast.error(res.data.message);
 			}
 		} catch (e) {
 			console.log(e.message);
+			toast.error(e.message);
 		}
 	};
 
 	useEffect(() => {
 		async function fetchData() {
 			try {
-				let userId = localStorage.getItem("userId");
 
-				// api.getNotes()
+				// notesApi.getNotes()
 				// 	.then((res) => {
 				// 		if (res.IsSuccess) {
 				// 			console.log("inside if condition", res);
@@ -43,44 +45,44 @@ const NotesList = (props) => {
 				// 		// this.setState({ isSpinnerLoading: false });
 				// 	});
 
-				fetch(`${environment.baseUrl}/notes/searchNote/${userId}`)
-					.then(async (response) => {
-						const data = await response.json();
-						if (data.isSuccess) {
-							setNotes(data.Data);
-						} else {
-							console.log("inside else condition", data);
-							setNotes(data.Data);
-						}
-						if (!response.ok) {
-							const error = (data && data.message) || response.statusText;
-							return Promise.reject(error);
-						}
-
-						console.log("check status", data);
-					})
-					.catch((error) => {
-						console.log("inside catch", error);
-					});
-
-				// api.getNotes()
+				// fetch(`${environment.baseUrl}/notes/searchNote/${userId}`)
 				// 	.then(async (response) => {
-				// 		const data = await response.data;
-
-				// 		// console.log("rerg r gr", response);
-
+				// 		const data = await response.json();
 				// 		if (data.isSuccess) {
 				// 			setNotes(data.Data);
 				// 		} else {
 				// 			console.log("inside else condition", data);
 				// 			setNotes(data.Data);
 				// 		}
+				// 		if (!response.ok) {
+				// 			const error = (data && data.message) || response.statusText;
+				// 			return Promise.reject(error);
+				// 		}
+
+				// 		console.log("check status", data);
 				// 	})
 				// 	.catch((error) => {
 				// 		console.log("inside catch", error);
 				// 	});
 
-				// const res = await api.getNotes();
+				notesApi.getNotes()
+					.then(async (response) => {
+						const data = await response.data;
+
+						// console.log("rerg r gr", response);
+
+						if (data.isSuccess) {
+							setNotes(data.Data);
+						} else {
+							console.log("inside else condition", data);
+							setNotes(data.Data);
+						}
+					})
+					.catch((error) => {
+						console.log("inside catch", error);
+					});
+
+				// const res = await notesApi.getNotes();
 				// console.log(res);
 				// if (res.data.isSuccess) {
 				// 	setNotes(res.data.Data);
