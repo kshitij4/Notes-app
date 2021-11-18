@@ -17,4 +17,9 @@ export const notesApi = {
 		return axios.delete(`${environment.baseUrl}/notes/deleteNote/${noteId}`,
 		{headers: { authorization: `Bearer ${authToken}`}});
 	},
+	updateNote: (note,noteId) => {
+		const authToken = localStorage.getItem("token");
+		return axios.post(`${environment.baseUrl}/notes/updateNote/${noteId}`,note,
+		{headers: { authorization: `Bearer ${authToken}`}});
+	}
 };

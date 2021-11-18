@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { notesApi } from "../../../utils/notes.api";
 import Button from "../../common/UI/Button/Button";
@@ -6,8 +6,13 @@ import Card from "../../common/UI/Card/Card";
 import styles from "./NotesList.module.css";
 
 const NotesList = (props) => {
+	const tit = useRef();
+	const desc = useRef();
+
 	const [notes, setNotes] = useState([]);
 	const [change, setChange] = useState(false);
+	const [canEditTitle, setCanEditTitle] = useState({ id: "", canEdit: false });
+	const [canEditDesc, setCanEditDesc] = useState({ id: "", canEdit: false });
 
 	const deleteHandler = async (id) => {
 		try {
@@ -27,24 +32,57 @@ const NotesList = (props) => {
 		}
 	};
 
+	const updateHandler = async (note,id) => {
+		try {
+			const res = await notesApi.updateNote(note,id);
+			console.log(res);
+			if (res.data.isSuccess) {
+				console.log(res.data.message);
+				setChange((prev) => !prev);
+				toast.success(res.data.message);
+			} else {
+				console.log(res.data.message);
+				toast.error(res.data.message);
+			}
+		} catch (e) {
+			console.log(e.message);
+			toast.error(e.message);
+		}
+	}
+
+	const onTitleFocus = (id) => {
+		setCanEditTitle((prev) => ({
+			id: id,
+			canEdit: !prev.canEdit,
+		}));
+	};
+	const onDescFocus = (id) => {
+		setCanEditDesc((prev) => ({
+			id: id,
+			canEdit: !prev.canEdit,
+		}));
+	};
+
+	const onTitleBlur = (id,description) => {
+		setCanEditTitle((prev) => ({
+			id: id,
+			canEdit: !prev.canEdit,
+		}));
+		const title = tit.current.value;
+		updateHandler({title,description},id);
+	}
+	const onDescBlur = (id,title) => {
+		setCanEditDesc((prev) => ({
+			id: id,
+			canEdit: !prev.canEdit,
+		}));
+		const description= desc.current.value;
+		updateHandler({title,description},id);
+	}
+
 	useEffect(() => {
 		async function fetchData() {
 			try {
-
-				// notesApi.getNotes()
-				// 	.then((res) => {
-				// 		if (res.IsSuccess) {
-				// 			console.log("inside if condition", res);
-				// 		} else {
-				// 			console.log("inside else condition");
-				// 			// this.setState({ isSpinnerLoading: false });
-				// 		}
-				// 	})
-				// 	.catch((err) => {
-				// 		console.log("err::", err);
-				// 		// this.setState({ isSpinnerLoading: false });
-				// 	});
-
 				// fetch(`${environment.baseUrl}/notes/searchNote/${userId}`)
 				// 	.then(async (response) => {
 				// 		const data = await response.json();
@@ -81,14 +119,6 @@ const NotesList = (props) => {
 					.catch((error) => {
 						console.log("inside catch", error);
 					});
-
-				// const res = await notesApi.getNotes();
-				// console.log(res);
-				// if (res.data.isSuccess) {
-				// 	setNotes(res.data.Data);
-				// } else {
-				// 	console.log(res.data.message);
-				// }
 			} catch (e) {
 				console.log("bc", e.message);
 			}
@@ -98,13 +128,42 @@ const NotesList = (props) => {
 
 	return notes.length > 0 ? (
 		<ul className={styles["notes-list"]}>
-			{notes.map((note) => (
-				<Card key={note._id} className={styles["note-item"]}>
+			{notes.map((note, index) => (
+				<Card key={index} className={styles["note-item"]}>
 					<li>
 						<Button onClick={() => deleteHandler(note._id)} className={styles["del-btn"]}>
 							x
 						</Button>
-						<b>{note.title}</b> <p>{note.description}</p>
+						<div className={styles.control}>
+							{canEditTitle.id === note._id && canEditTitle.canEdit ? (
+								<input
+									size="60"
+									type="text"
+									defaultValue={note.title}
+									ref = {tit}
+									autoFocus
+									onBlur={() => onTitleBlur(note._id,note.description)}
+								/>
+							) : (
+								<p style={{ fontWeight: "bold" }} onClick={() => onTitleFocus(note._id)}>
+									{note.title}
+								</p>
+							)}
+							{canEditDesc.id === note._id && canEditDesc.canEdit ? (
+								<textarea
+									cols="100"
+									rows="8"
+									autoFocus
+									style={{ marginTop: "5px", display: "block" }}
+									type="text"
+									ref = {desc}
+									defaultValue={note.description}
+									onBlur={() => onDescBlur(note._id,note.title)}
+								/>
+							) : (
+								<p onClick={() => onDescFocus(note._id)}> {note.description} </p>
+							)}
+						</div>
 					</li>
 				</Card>
 			))}

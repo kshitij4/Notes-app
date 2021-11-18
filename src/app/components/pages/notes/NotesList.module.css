@@ -30,3 +30,30 @@
     border-color: #b90606;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.26);
   }
+
+  .control {
+    margin: 1rem 0;
+    display: grid;
+    align-items: center;
+    flex-direction: row;
+  }
+  .control input , .control textarea{
+    flex: 4;
+    font: inherit;
+    padding: 0.35rem 0.35rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  
+  .control input:focus, .control textarea:focus{
+    outline: none;
+  } 
+
+  @media (min-width: 768px) {
+    .control {
+      align-items: center;
+      flex-direction: row;
+    }
+  
+  }
+  
