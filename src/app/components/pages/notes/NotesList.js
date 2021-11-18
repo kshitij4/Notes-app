@@ -69,7 +69,7 @@ const NotesList = (props) => {
 					.then(async (response) => {
 						const data = await response.data;
 
-						// console.log("rerg r gr", response);
+						console.log("rerg r gr", response);
 
 						if (data.isSuccess) {
 							setNotes(data.Data);

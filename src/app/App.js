@@ -38,7 +38,7 @@ function App() {
 	};
 
 	useEffect(() => {
-		if (localStorage.getItem("userId")) {
+		if (localStorage.getItem("token")) {
 			setIsLoggedIn(true);
 		}
 	}, []);

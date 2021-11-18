@@ -1,18 +1,19 @@
 import { environment } from "../environments/environment";
 import axios from "axios";
 
-const authToken = localStorage.getItem("token");
-
 export const notesApi = {
 	createNote: (note) => {
+		const authToken = localStorage.getItem("token");
 		return axios.post(`${environment.baseUrl}/notes/createnote`, note, 
 		{headers: { authorization: `Bearer ${authToken}`}});
 	},
 	getNotes: () => {
+		const authToken = localStorage.getItem("token");
 		return axios.get(`${environment.baseUrl}/notes/searchNote`,
 		{headers: { authorization: `Bearer ${authToken}`}});
 	},
 	deleteNote: (noteId) => {
+		const authToken = localStorage.getItem("token");
 		return axios.delete(`${environment.baseUrl}/notes/deleteNote/${noteId}`,
 		{headers: { authorization: `Bearer ${authToken}`}});
 	},

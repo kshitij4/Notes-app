@@ -1,7 +1,6 @@
 import { environment } from "../environments/environment";
 import axios from "axios";
 
-const authToken = localStorage.getItem("token");
 
 export const adminApi = {
 	register: (userData) => {
@@ -11,6 +10,7 @@ export const adminApi = {
 		return axios.post(`${environment.baseUrl}/users/student/login`, userData);
 	},
 	getProfile: () => {
+		const authToken = localStorage.getItem("token");
 		return axios.get(`${environment.baseUrl}/users/student/profile`,
 		{headers: { authorization: `Bearer ${authToken}`}});
 	},
