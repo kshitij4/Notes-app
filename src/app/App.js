@@ -46,7 +46,6 @@ function App() {
 	const loginHandler = async (email, password) => {
 		try {
 			const res = await adminApi.login({ email, password });
-			console.log(res);
 			if (res.data.isSuccess) {
 				setIsLoggedIn(true);
 				console.log(res);
