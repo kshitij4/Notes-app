@@ -1,17 +1,17 @@
-import { environment } from "../environments/environment";
 import axios from "axios";
 
+const baseUrl = process.env.REACT_APP_BASE_URL;
 
 export const adminApi = {
 	register: (userData) => {
-		return axios.post(`${environment.baseUrl}/users/student/register`, userData);
+		return axios.post(`${baseUrl}/users/student/register`, userData);
 	},
 	login: (userData) => {
-		return axios.post(`${environment.baseUrl}/users/student/login`, userData);
+		return axios.post(`${baseUrl}/users/student/login`, userData);
 	},
 	getProfile: () => {
 		const authToken = localStorage.getItem("token");
-		return axios.get(`${environment.baseUrl}/users/student/profile`,
+		return axios.get(`${baseUrl}/users/student/profile`,
 		{headers: { authorization: `Bearer ${authToken}`}});
 	},
 };
