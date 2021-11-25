@@ -3,8 +3,10 @@ import { adminApi } from "./utils/admin.api";
 import { notesApi } from "./utils/notes.api";
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Preloader from "./components/common/actions/Preloaders/Preloader";
 
 import Login from "./components/pages/login/Login";
 import Home from "./components/pages/home/Home";
@@ -17,18 +19,25 @@ import Toast from "./components/common/actions/Toast/Toast";
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [loading, setLoading] = useState(false);
 
 	const notesHandler = async (title, description) => {
+		console.log("IN notes");
+		
+		console.log(loading);
 		notesApi.createNote({ userId: localStorage.getItem("userId"), title, description })
 			.then((res) => {
 				console.log(res);
 				if (res.data.isSuccess) {
 					console.log(res.data.message);
 					toast.success(res.data.message);
+					setLoading(false);
+					console.log(loading);
 				} else {
 					console.log("Something went wrong");
 					console.log(res.data.message);
 					toast.error(res.data.message);
+					setLoading(false);
 				}
 			})
 			.catch((error) => {
@@ -51,6 +60,7 @@ function App() {
 				console.log(res);
 				localStorage.setItem("token", res.data.Data.token);
 				toast.success("Logged in Successfully");
+				setLoading(false);
 			} else {
 				console.log(res.data.message);
 				toast.error(res.data.message);
@@ -67,9 +77,11 @@ function App() {
 			console.log(res);
 			if (res.data.isSuccess) {
 				toast.success(res.data.message);
+				setLoading(false);
 			} else {
 				console.log(res.data.message);
 				toast.error(res.data.message);
+				setLoading(false);
 			}
 		} catch (error) {
 			console.log(error);
@@ -89,6 +101,7 @@ function App() {
 			<Router>
 				<MainHeader isAuthenticated={isLoggedIn} onLogout={logoutHandler} />
 				<main>
+					<Preloader customLoading = {loading}/>
 					<Routes>
 						<Route path="/register" element={!isLoggedIn ? <Register onRegister={registerHandler} /> : <Navigate to="/" />} />
 						<Route path="/profile" element={isLoggedIn ? <Profile /> : <Navigate to="/" />} />

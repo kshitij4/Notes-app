@@ -37,6 +37,10 @@
     border-color: #3f77ee;
     background: #dddbfc;
   }
+  .control.invalid input,.control.invalid textarea {
+    border-color: red;
+    background: #fbdada;
+  }
 
   .actions {
     text-align: center;
