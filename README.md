@@ -2,7 +2,7 @@
 
 This project was bootstrapped with [Create React App]
 
-Heroku Live Link - https://notes-app-reactt.herokuapp.com/
+## Heroku Live Link - https://notes-app-reactt.herokuapp.com/
 
 ## Available Scripts
 
